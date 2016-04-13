@@ -24,9 +24,9 @@ edit personal information in secrets.yml ansible vault (default password: **pass
     ansible-vault rekey secrets.yml
     ansible-vault edit secrets.yml
 
-run
+run (replace `<SUDOER>`, `<SSH_PRIVATE_KEY>`, `<IP>`)
 
-    ansible-playbook --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY_PATH> --ask-become-pass  --ask-vault-pass --inventory-file='<IP>,' bootstrap.yml
+    ansible-playbook -u <SUDOER> --private-key=<SSH_PRIVATE_KEY> --ask-become-pass  --ask-vault-pass -i '<IP>,' bootstrap.yml
 
 
 ## requirements
@@ -43,7 +43,7 @@ run
 
 verify that you can ping your server via ssh
 
-    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY_PATH> --ask-become-pass --inventory-file='<IP>,' -m ping
+    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --ask-become-pass --inventory-file='<IP>,' -m ping
 
 example on a raspberry pi :
 
@@ -103,7 +103,7 @@ the encrypted information that you need to change :
 
 now run bootstrap.yml file
 
-    ansible-playbook --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY_PATH> --ask-become-pass  --ask-vault-pass --inventory-file='<IP>,' bootstrap.yml
+    ansible-playbook --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --ask-become-pass  --ask-vault-pass --inventory-file='<IP>,' bootstrap.yml
 
 example
 
@@ -114,17 +114,17 @@ example
 
 ### Can I run bootstrap.yml playbook on multiple IP ?
 
-change the --inventory-file parameter
+change the `--inventory-file` parameter
 
-    ansible-playbook .... --inventory-file='<IP>,<IP2>,<IP3>' bootstrap.yml
+    ansible-playbook .... --inventory-file='<IP>,<IP2>,<IP3>,' bootstrap.yml
 
 ### I do not have access to my server via ssh, how do I do?
 
-You need ssh access to use ansible. If you have the password of a sudoer, then copy your **ssh key public** key on your server.
+You need ssh access to use ansible. If you have the password of a sudoer, then copy your **ssh public key** on your server.
 
     ssh-copy-id -i ~/.ssh/id_rsa.pub <SUDOER>@<IP>
 
-## work in progress
+## Left to do
 
- - delete first <SUDOER>
+ - delete first `<SUDOER>` if not root or admin
 
