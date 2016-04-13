@@ -43,13 +43,12 @@ run (replace `<SUDOER>`, `<SSH_PRIVATE_KEY>`, `<IP>`)
 
 verify that you can ping your server via ssh
 
-    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --ask-become-pass --inventory-file='<IP>,' -m ping
+    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --inventory-file='<IP>,' -m ping
 
 example on a raspberry pi :
 
-    ansible all --user=pi --private-key=~/.ssh/id_rsa --ask-become-pass --inventory-file='192.168.1.100,' -m ping
+    ansible all --user=pi --private-key=~/.ssh/id_rsa --inventory-file='192.168.1.100,' -m ping
 
-    SUDO password: raspberry
     192.168.1.100 | SUCCESS => {
         "changed": false,
         "ping": "pong"
@@ -60,10 +59,10 @@ explanations :
   - `ansible all` : run ansible command on all hosts
   - `--user=pi` : ssh with user pi
   - `--private-key=~/.ssh/id_rsa` : path of the ssh key use to connect to the server
-  - `--ask-become-pass` : ask root password before running playbook `bootstrap.yml`
   - `--inventory-file='192.168.1.100,'` : specify inventory file. do not forget the comma `,`
   - `-m ping` : run module ping
 
+if the previous command failed, `<SUDOER>` don't have access
 
 ## modify personal information
 
