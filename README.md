@@ -5,7 +5,9 @@ Use this repository if you want to improve the security of your server and confi
   - change root password
   - add admin user of your choice
   - add authorized keys for admin user
-  - add admin user to sudoers
+  - create sudoers.d directory
+  - set includedir in sudoers
+  - create sudoer file for admin
   - update APT package cache
   - upgrade APT to the latest packages
   - install required packages (ufw, fail2ban, vim, ...)
@@ -43,13 +45,12 @@ run (replace `<SUDOER>`, `<SSH_PRIVATE_KEY>`, `<IP>`)
 
 verify that you can ping your server via ssh
 
-    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --ask-become-pass --inventory-file='<IP>,' -m ping
+    ansible all --user=<SUDOER> --private-key=<SSH_PRIVATE_KEY> --inventory-file='<IP>,' -m ping
 
 example on a raspberry pi :
 
-    ansible all --user=pi --private-key=~/.ssh/id_rsa --ask-become-pass --inventory-file='192.168.1.100,' -m ping
+    ansible all --user=pi --private-key=~/.ssh/id_rsa --inventory-file='192.168.1.100,' -m ping
 
-    SUDO password: raspberry
     192.168.1.100 | SUCCESS => {
         "changed": false,
         "ping": "pong"
@@ -60,10 +61,10 @@ explanations :
   - `ansible all` : run ansible command on all hosts
   - `--user=pi` : ssh with user pi
   - `--private-key=~/.ssh/id_rsa` : path of the ssh key use to connect to the server
-  - `--ask-become-pass` : ask root password before running playbook `bootstrap.yml`
   - `--inventory-file='192.168.1.100,'` : specify inventory file. do not forget the comma `,`
   - `-m ping` : run module ping
 
+if the previous command failed, `<SUDOER>` don't have access
 
 ## modify personal information
 
@@ -123,6 +124,13 @@ change the `--inventory-file` parameter
 You need ssh access to use ansible. If you have the password of a sudoer, then copy your **ssh public key** on your server.
 
     ssh-copy-id -i ~/.ssh/id_rsa.pub <SUDOER>@<IP>
+
+### How can I restart bootstrap.yml after a first run ?
+
+you just need to specify ansible_port in extra vars
+
+    ansible-playbook .... --extra-vars='ansible_port=<SSH_PORT>' bootstrap.yml
+
 
 ## Left to do
 

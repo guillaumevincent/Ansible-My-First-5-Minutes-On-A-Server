@@ -17,22 +17,38 @@
     - debug: msg="Ssh port {{ SSH_PORT }}"
 
     - name: change root password
-      user: name=root password="{{ ROOT_PASSWORD }}"
+      user: name=root password={{ ROOT_PASSWORD | password_hash('sha512') }}
 
     - name: add admin user
-      user: name={{ ADMIN_USERNAME }} password="{{ ADMIN_PASSWORD }}" shell=/bin/bash
+      user: name={{ ADMIN_USERNAME }} password={{ ADMIN_PASSWORD | password_hash('sha512') }} shell=/bin/bash
 
     - name: add authorized keys for admin user
       authorized_key: user={{ ADMIN_USERNAME }} key="{{ lookup('file', item) }}"
       with_items: PUBLIC_KEYS
 
-    - name: add admin user to sudoers
-      template: 
-        src: templates/user_sudoer.j2
-        dest: /etc/sudoers.d/{{ ADMIN_USERNAME }}
+    - name: create sudoers.d directory
+      file:
+        path: /etc/sudoers.d
         owner: root
         group: root
-        mode: 0644
+        mode: 0755
+        state: directory
+
+    - name: set includedir in sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        line: "#includedir /etc/sudoers.d"
+        state: present
+        validate: "/usr/sbin/visudo -cf %s"
+
+    - name: create sudoer file for admin
+      template:
+        src: sudoers.d.j2
+        dest: "/etc/sudoers.d/{{ ADMIN_USERNAME }}"
+        mode: 0440
+        owner: root
+        group: root
+        validate: "/usr/sbin/visudo -cf %s"
 
     - name: update APT package cache
       apt: update_cache=yes cache_valid_time=3600
