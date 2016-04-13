@@ -1,0 +1,74 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+
+  vars:
+    DEFAULT_PACKAGES:
+      - ufw
+      - fail2ban
+      - vim
+
+  tasks:
+    - include_vars: secrets.yml
+
+    - debug: msg="Root password {{ ROOT_PASSWORD }}"
+    - debug: msg="Admin username {{ ADMIN_USERNAME }} and admin password {{ ADMIN_PASSWORD }}"
+    - debug: msg="Ssh port {{ SSH_PORT }}"
+
+    - name: change root password
+      user: name=root password="{{ ROOT_PASSWORD }}"
+
+    - name: add admin user
+      user: name={{ ADMIN_USERNAME }} password="{{ ADMIN_PASSWORD }}" shell=/bin/bash
+
+    - name: add authorized keys for admin user
+      authorized_key: user={{ ADMIN_USERNAME }} key="{{ lookup('file', item) }}"
+      with_items: PUBLIC_KEYS
+
+    - name: add admin user to sudoers
+      lineinfile: dest=/etc/sudoers
+                  regexp="{{ ADMIN_USERNAME }} ALL"
+                  line="{{ ADMIN_USERNAME }} ALL=(ALL) ALL"
+                  state=present
+
+    - name: update APT package cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: upgrade APT to the latest packages
+      apt: upgrade=safe
+
+    - name: install required packages
+      apt: state=installed pkg={{ item }}
+      with_items: DEFAULT_PACKAGES
+
+    - name: setup ufw
+      ufw: state=enabled policy=deny
+
+    - name: allow ssh traffic
+      ufw: rule=allow port={{ SSH_PORT }} proto=tcp
+
+    - name: change ssh port
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^Port\s"
+                  line="Port {{ SSH_PORT }}"
+                  state=present
+      notify: restart ssh
+
+    - name: disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PasswordAuthentication"
+                  line="PasswordAuthentication no"
+                  state=present
+      notify: restart ssh
+
+    - name: disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+                  state=present
+      notify: restart ssh
+
+  handlers:
+    - name: restart ssh
+      service: name=ssh state=restarted
