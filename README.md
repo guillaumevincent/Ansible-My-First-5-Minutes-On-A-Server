@@ -125,6 +125,13 @@ You need ssh access to use ansible. If you have the password of a sudoer, then c
 
     ssh-copy-id -i ~/.ssh/id_rsa.pub <SUDOER>@<IP>
 
+### How can I restart bootstrap.yml after a first run ?
+
+you just need to specify ansible_port in extra vars
+
+    ansible-playbook .... --extra-vars='ansible_port=<SSH_PORT>' bootstrap.yml
+
+
 ## Left to do
 
  - delete first `<SUDOER>` if not root or admin
