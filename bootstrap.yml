@@ -10,7 +10,7 @@
       - vim
 
   tasks:
-    - include_vars: secrets.yml
+    - include_vars: secrets.default
 
     - debug: msg="Root password {{ ROOT_PASSWORD }}"
     - debug: msg="Admin username {{ ADMIN_USERNAME }} and admin password {{ ADMIN_PASSWORD }}"
@@ -27,10 +27,12 @@
       with_items: PUBLIC_KEYS
 
     - name: add admin user to sudoers
-      lineinfile: dest=/etc/sudoers
-                  regexp="{{ ADMIN_USERNAME }} ALL"
-                  line="{{ ADMIN_USERNAME }} ALL=(ALL) ALL"
-                  state=present
+      template: 
+        src: templates/user_sudoer.j2
+        dest: /etc/sudoers.d/{{ ADMIN_USERNAME }}
+        owner: root
+        group: root
+        mode: 0644
 
     - name: update APT package cache
       apt: update_cache=yes cache_valid_time=3600
