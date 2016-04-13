@@ -5,7 +5,9 @@ Use this repository if you want to improve the security of your server and confi
   - change root password
   - add admin user of your choice
   - add authorized keys for admin user
-  - add admin user to sudoers
+  - create sudoers.d directory
+  - set includedir in sudoers
+  - create sudoer file for admin
   - update APT package cache
   - upgrade APT to the latest packages
   - install required packages (ufw, fail2ban, vim, ...)
