@@ -1,19 +1,13 @@
 # Ansible My First 5 Minutes On A Server
 
-Use this repository if you want to improve the security of your server and configure automatically :
+Use this playbook if you want to improve the security of your server and want to :
 
   - change root password
   - add admin user of your choice
   - add authorized keys for admin user
-  - create sudoers.d directory
-  - set includedir in sudoers
-  - create sudoer file for admin
-  - update APT package cache
-  - upgrade APT to the latest packages
-  - install required packages (ufw, fail2ban, vim, ...)
-  - setup ufw
-  - allow ssh traffic
-  - change ssh port
+  - add admin user in sudoers
+  - install default packages (ufw, fail2ban, vim, ...)
+  - setup firewall
   - disallow password authentication
   - disallow root SSH access
 
@@ -95,7 +89,6 @@ the encrypted information that you need to change :
     ROOT_PASSWORD: 'xxxxxx'
     ADMIN_PASSWORD: 'xxxxxx'
     ADMIN_USERNAME: admin
-    SSH_PORT: 2222
     PUBLIC_KEYS:
       - ~/.ssh/id_rsa.pub
 
@@ -125,14 +118,11 @@ You need ssh access to use ansible. If you have the password of a sudoer, then c
 
     ssh-copy-id -i ~/.ssh/id_rsa.pub <SUDOER>@<IP>
 
-### How can I restart bootstrap.yml after a first run ?
+### Should I change the default SSH port ?
 
-you just need to specify ansible_port in extra vars
+I thought it was a good idea. But running SSH on a port over 1024 (i.e. a non-privileged port) is actually potentially a security vulnerability.
+Imagine you run SSH on port 2222 and your ssh daemon crashes. Now any local user can start their own (fake) ssh daemon on port 2222 which could be bad.
 
-    ansible-playbook .... --extra-vars='ansible_port=<SSH_PORT>' bootstrap.yml
+See why it's probably better to stay on port 22 [Should I change the default SSH port on linux servers?](http://security.stackexchange.com/a/32311/26203)
 
-
-## Left to do
-
- - delete first `<SUDOER>` if not root or admin
-
+Thanks Cryonine

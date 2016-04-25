@@ -4,6 +4,7 @@
   become_user: root
 
   vars:
+    SSH_PORT: 22
     DEFAULT_PACKAGES:
       - ufw
       - fail2ban
