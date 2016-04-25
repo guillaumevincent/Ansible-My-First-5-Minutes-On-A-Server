@@ -91,6 +91,9 @@ the encrypted information that you need to change :
     ADMIN_USERNAME: admin
     PUBLIC_KEYS:
       - ~/.ssh/id_rsa.pub
+    #EXTRA_PACKAGES:
+    #  - vim
+    #  - htop
 
 
 ## setup your server
