@@ -12,8 +12,7 @@
   tasks:
     - include_vars: secrets.yml
 
-    - debug: msg="Root password {{ ROOT_PASSWORD }}"
-    - debug: msg="Admin username {{ ADMIN_USERNAME }} and admin password {{ ADMIN_PASSWORD }}"
+    - debug: msg="Admin username {{ ADMIN_USERNAME }}"
     - debug: msg="Ssh port {{ SSH_PORT }}"
 
     - name: change root password
