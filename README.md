@@ -6,7 +6,8 @@ Use this playbook if you want to improve the security of your server and want to
   - add admin user of your choice
   - add authorized keys for admin user
   - add admin user in sudoers
-  - install default packages (ufw, fail2ban, vim, ...)
+  - install default packages (ufw, fail2ban, ...)
+  - install user extra packages
   - setup firewall
   - disallow password authentication
   - disallow root SSH access
