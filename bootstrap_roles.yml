@@ -1,7 +1,7 @@
 ---
 - hosts: all
   become: yes
-  become_user: root
+  become_user: pi
 
   vars:
     SSH_PORT: 22
@@ -9,8 +9,6 @@
       - ufw
       - fail2ban
     TIMEZONE: Europe/Paris
-
-  include_vars: secrets.yml
 
   roles:
     - user
