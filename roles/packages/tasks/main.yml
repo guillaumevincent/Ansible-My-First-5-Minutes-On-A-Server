@@ -8,7 +8,7 @@
 
 - name: install required packages
   apt: state=installed pkg={{ item }}
-  with_items: DEFAULT_PACKAGES
+  with_items: "{{ DEFAULT_PACKAGES }}"
 
 - name: install extra packages defined in secrets.yml
   apt: state=installed pkg={{ item }}
