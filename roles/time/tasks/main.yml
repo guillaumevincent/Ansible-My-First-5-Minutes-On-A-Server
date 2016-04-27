@@ -12,7 +12,7 @@
   command: dpkg-reconfigure --frontend noninteractive tzdata
 
 - name: Install ntp
-  apt: pkg=ntp state=installed update_cache=true 
+  apt: pkg=ntp state=installed update_cache=true
 
 - name: Install ntp
   command: dpkg-reconfigure ntp
