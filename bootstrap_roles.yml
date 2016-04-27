@@ -8,10 +8,10 @@
     DEFAULT_PACKAGES:
       - ufw
       - fail2ban
-    TIMEZONE: Europe/Paris
 
   roles:
     - user
     - packages
     - ssh 
     - time
+    - config_fail2ban
