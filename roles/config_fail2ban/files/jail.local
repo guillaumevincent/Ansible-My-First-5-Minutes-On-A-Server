@@ -138,7 +138,7 @@ maxretry = 3
 
 enabled  = true
 port     = ssh
-filter = sshd-strict
+filter = ssh-strict
 logpath  = /var/log/auth.log
 maxretry = 1
 

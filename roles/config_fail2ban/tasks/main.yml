@@ -15,8 +15,8 @@
 
 - name: Copy sshd-strict.conf
   copy:
-    src: files/sshd-strict.conf
-    dest: /etc/fail2ban/filter.d/sshd-strict.conf
+    src: files/ssh-strict.conf
+    dest: /etc/fail2ban/filter.d/ssh-strict.conf
     owner: root
     group: root
     mode: 0644
