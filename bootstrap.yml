@@ -10,7 +10,7 @@
       - fail2ban
 
   tasks:
-    - include_vars: secrets.yml
+    - include_vars: secrets.default
 
     - debug: msg="Admin username {{ ADMIN_USERNAME }}"
     - debug: msg="Ssh port {{ SSH_PORT }}"
