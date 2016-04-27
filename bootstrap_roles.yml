@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+
+  vars:
+    SSH_PORT: 22
+    DEFAULT_PACKAGES:
+      - ufw
+      - fail2ban
+    TIMEZONE: Europe/Paris
+
+  include_vars: secrets.yml
+
+  roles:
+    - user
+    - packages
+    - ssh 
+    - time
