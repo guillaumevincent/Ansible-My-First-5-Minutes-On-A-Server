@@ -1,7 +1,7 @@
 ---
 - hosts: all
   become: yes
-  become_user: pi
+  become_user: root
 
   vars:
     SSH_PORT: 22
