@@ -11,6 +11,7 @@ Use this playbook if you want to improve the security of your server and want to
   - setup firewall
   - disallow password authentication
   - disallow root SSH access
+  - setup the time
 
 
 ## tldr
@@ -92,6 +93,7 @@ the encrypted information that you need to change :
     ADMIN_USERNAME: admin
     PUBLIC_KEYS:
       - ~/.ssh/id_rsa.pub
+    TIMEZONE: 'xxxxxx'
     #EXTRA_PACKAGES:
     #  - vim
     #  - htop
