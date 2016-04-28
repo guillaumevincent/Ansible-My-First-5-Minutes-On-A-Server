@@ -1,0 +1,18 @@
+---
+- include_vars: ../../secrets.yml
+- name: Set up time zone
+  copy: content="{{ TIMEZONE }}"
+        dest=/etc/timezone
+        owner=root
+        group=root
+        mode=0644
+        backup=yes
+
+- name: Update timezone
+  command: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: Install ntp
+  apt: pkg=ntp state=installed update_cache=true
+
+- name: Install ntp
+  command: dpkg-reconfigure ntp

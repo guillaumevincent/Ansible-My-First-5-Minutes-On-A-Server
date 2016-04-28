@@ -1,23 +1,6 @@
 ---
-- name: Install fail2ban and dependencies
-  apt: name={{ item }} state=present
-  with_items:
-    - fail2ban
-
-- name: Copy configuration
-  copy:
-    src: files/jail.local
-    dest: /etc/fail2ban/jail.local
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart fail2ban
-
-- name: Copy sshd-strict.conf
-  copy:
-    src: files/ssh-strict.conf
-    dest: /etc/fail2ban/filter.d/ssh-strict.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart fail2ban
+  - include: deb.yml
+    when: ansible_os_family == 'Debian'
+  
+  - include: red.yml
+    when: ansible_os_family == 'RedHat'

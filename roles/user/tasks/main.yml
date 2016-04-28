@@ -1,35 +1,6 @@
 ---
-- include_vars: ../../secrets.yml
-- name: change root password
-  user: name=root password={{ ROOT_PASSWORD | password_hash('sha512') }}
-
-- name: add admin user
-  user: name={{ ADMIN_USERNAME }} password={{ ADMIN_PASSWORD | password_hash('sha512') }} shell=/bin/bash
-
-- name: add authorized keys for admin user
-  authorized_key: user={{ ADMIN_USERNAME }} key="{{ lookup('file', item) }}"
-  with_items: "{{ PUBLIC_KEYS }}"
-
-- name: create sudoers.d directory
-  file:
-    path: /etc/sudoers.d
-    owner: root
-    group: root
-    mode: 0755
-    state: directory
-
-- name: set includedir in sudoers
-  lineinfile:
-    dest: /etc/sudoers
-    line: "#includedir /etc/sudoers.d"
-    state: present
-    validate: "/usr/sbin/visudo -cf %s"
-
-- name: create sudoer file for admin
-  template:
-    src: sudoers.d.j2
-    dest: "/etc/sudoers.d/{{ ADMIN_USERNAME }}"
-    mode: 0440
-    owner: root
-    group: root
-    validate: "/usr/sbin/visudo -cf %s"
+  - include: deb.yml
+    when: ansible_os_family == 'Debian'
+  
+  - include: red.yml
+    when: ansible_os_family == 'RedHat'

@@ -1,15 +1,6 @@
 ---
-- include_vars: ../../secrets.yml
-- name: update APT package cache
-  apt: update_cache=yes cache_valid_time=3600
-
-- name: upgrade APT to the latest packages
-  apt: upgrade=safe
-
-- name: install required packages
-  apt: state=installed pkg={{ item }}
-  with_items: "{{ DEFAULT_PACKAGES }}"
-
-- name: install extra packages defined in secrets.yml
-  apt: state=installed pkg={{ item }}
-  with_items: "{{ EXTRA_PACKAGES|default([]) }}"
+  - include: deb.yml
+    when: ansible_os_family == 'Debian'
+  
+  - include: red.yml
+    when: ansible_os_family == 'RedHat'
