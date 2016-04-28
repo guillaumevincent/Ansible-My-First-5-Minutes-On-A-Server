@@ -5,3 +5,4 @@
 /secrets.yml
 *retry
 inventori
+test/.vagrant/*

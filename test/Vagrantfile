@@ -1,0 +1,25 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.ssh.insert_key = false
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "512"]
+  end
+#Debian 8
+  config.vm.define "debian8" do |deb|
+    deb.vm.hostname = "debian8"
+    deb.vm.box = "debian/jessie64"
+    deb.vm.network :private_network, ip: "192.168.60.20"
+  end
+#Ubuntu 14.04
+  config.vm.define "ubuntu14" do |ubu|
+    ubu.vm.hostname = "ubuntu14"
+    ubu.vm.box = "ubuntu/trusty64"
+    ubu.vm.network :private_network, ip: "192.168.60.21"
+  end
+#CentOS 7
+  config.vm.define "centos7" do |cen|
+    cen.vm.hostname = "centos7"
+    cen.vm.box = "centos/7"
+    cen.vm.network :private_network, ip: "192.168.60.22"
+  end
+end
