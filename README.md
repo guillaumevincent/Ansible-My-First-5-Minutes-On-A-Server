@@ -132,3 +132,19 @@ Imagine you run SSH on port 2222 and your ssh daemon crashes. Now any local user
 See why it's probably better to stay on port 22 [Should I change the default SSH port on linux servers?](http://security.stackexchange.com/a/32311/26203)
 
 Thanks Cryonine
+
+### How to use the inventory file
+
+Having the write 
+
+    --inventory-file='192.168.1.100,'
+
+is not optimal and makes the command innecessarily long quite fast when you add more and more servers. The solution is quite
+simple, edit the file called inventoire and add your own list of IPs. Or create your own (remember to also add it to the
+.gitignore file). 
+
+    ansible-playbook --private-key=~/.ssh/id_rsa --ask-become-pass --ask-vault-pass -i inventoire bootstrap.yml
+
+If we want to limit the run of the playbook to just one machine:
+
+    ansible-playbook --private-key=~/.ssh/id_rsa --ask-become-pass --ask-vault-pass -i inventoire bootstrap.yml -l server1

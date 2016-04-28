@@ -1,4 +1,4 @@
-server1
-server2
+server1 ansible_ssh_host=192.168.0.21 ansible_ssh_user=pi
+server2 ansible_ssh_host=192.168.0.22 ansible_ssh_user=pi
 ...
-servern
+servern ansible_ssh_host=192.168.0.n ansible_ssh_user=pi
