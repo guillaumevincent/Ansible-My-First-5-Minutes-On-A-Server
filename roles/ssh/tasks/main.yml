@@ -1,6 +1,6 @@
 ---
   - include: deb.yml
-    when: ansible_os_family == 'Debian'
+    when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
   
   - include: red.yml
     when: ansible_os_family == 'RedHat'
