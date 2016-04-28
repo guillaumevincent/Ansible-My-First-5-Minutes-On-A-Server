@@ -8,6 +8,12 @@
     DEFAULT_PACKAGES:
       - ufw
       - fail2ban
+    DEFAULT_PACKAGES_RED:
+      - fail2ban
+      - vim
+      - htop
+      - tmux
+      - firewalld
 
   roles:
     - user

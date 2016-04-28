@@ -1,1 +1,18 @@
 ---
+- include_vars: ../../secrets.yml
+
+- name: upgrade all packages
+  yum: name=* state=latest
+
+- name: install EPEL
+  yum: state=installed pkg={{ item }}
+  with_items: 
+    - epel-release
+
+- name: install required packages
+  yum: state=installed pkg={{ item }}
+  with_items: "{{ DEFAULT_PACKAGES_RED }}"
+
+- name: install extra packages defined in secrets.yml
+  yum: state=installed pkg={{ item }}
+  with_items: "{{ EXTRA_PACKAGES|default([]) }}"

@@ -1,1 +1,27 @@
 ---
+- name: Start and enable firewalld service
+  service: name=firewalld state=started enabled=yes
+
+- name: allow ssh traffic
+  firewalld: service=ssh permanent=true state=enabled
+
+- name: change ssh port
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^Port\s"
+              line="Port {{ SSH_PORT }}"
+              state=present
+
+- name: disallow password authentication
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PasswordAuthentication"
+              line="PasswordAuthentication no"
+              state=present
+
+- name: disallow root SSH access
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp="^PermitRootLogin"
+              line="PermitRootLogin no"
+              state=present
+
+- name: reload ssh config
+  service: name=sshd state=reloaded enabled=yes

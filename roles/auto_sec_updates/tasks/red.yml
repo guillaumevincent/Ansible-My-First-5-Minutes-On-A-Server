@@ -1,0 +1,3 @@
+---
+  - name: Message
+    debug: msg="Automatic security updates only available on RedHat"

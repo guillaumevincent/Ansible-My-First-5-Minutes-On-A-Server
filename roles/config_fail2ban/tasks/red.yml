@@ -1,2 +1,8 @@
 ---
-  
+- name: Install fail2ban and dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - fail2ban
+
+- name: start and enable fail2ban
+  service: name=fail2ban state=started enabled=yes

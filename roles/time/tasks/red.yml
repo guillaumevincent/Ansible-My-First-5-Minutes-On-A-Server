@@ -1,1 +1,13 @@
 ---
+- include_vars: ../../secrets.yml
+
+- name: setup timezone
+  command:  timedatectl set-timezone {{ TIMEZONE }}
+  
+- name: install ntp
+  yum: state=installed pkg={{ item }}
+  with_items:
+    - ntp
+    
+- name: start and enable ntp
+  service: name=ntpd state=started enabled=yes
