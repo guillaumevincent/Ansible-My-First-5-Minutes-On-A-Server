@@ -23,3 +23,20 @@ For instance the CentOS 7 one:
 - vagrant 1.8.1 or later
 - ansible 2.0.1.0 or later
 - git
+
+## .ssh/config niceness
+
+    Host debian8
+      Hostname 192.168.60.20
+      User vagrant
+      IdentityFile ~/.ssh/id_rsa
+    Host ubuntu14
+      Hostname 192.168.60.21
+      User vagrant
+      IdentityFile ~/.ssh/id_rsa
+    Host centos7
+      Hostname 192.168.60.22
+      User vagrant
+      IdentityFile ~/.ssh/id_rsa
+
+It's just here for my own convenience.
