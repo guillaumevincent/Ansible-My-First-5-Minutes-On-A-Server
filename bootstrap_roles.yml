@@ -8,6 +8,10 @@
     DEFAULT_PACKAGES:
       - ufw
       - fail2ban
+      - lsof
+      - vim
+      - tmux
+      - htop
     DEFAULT_PACKAGES_RED:
       - fail2ban
       - vim
