@@ -1,0 +1,37 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    ADMIN_USERNAME: admin
+    SSH_PORT: 22
+    ansible_python_interpreter: "/usr/local/bin/python"
+
+  tasks:
+    - debug: msg="Admin username {{ ADMIN_USERNAME }}"
+    - debug: msg="Ssh port {{ SSH_PORT }}"
+
+    - name: change ssh port
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^Port\s"
+                  line="Port {{ SSH_PORT }}"
+                  state=present
+      notify: restart ssh
+#
+#    - name: disallow password authentication
+#      lineinfile: dest=/etc/ssh/sshd_config
+#                  regexp="^PasswordAuthentication"
+#                  line="PasswordAuthentication no"
+#                  state=present
+#      notify: restart ssh
+#
+#    - name: disallow root SSH access
+#      lineinfile: dest=/etc/ssh/sshd_config
+#                  regexp="^PermitRootLogin"
+#                  line="PermitRootLogin no"
+#                  state=present
+#      notify: restart ssh
+
+  handlers:
+    - name: restart ssh
+      service: name=ssh state=restarted
