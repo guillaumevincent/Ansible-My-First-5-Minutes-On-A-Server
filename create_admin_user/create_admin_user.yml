@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    ADMIN_USERNAME: admin
+    ansible_python_interpreter: "/usr/local/bin/python"
+
+  tasks:
+    - debug: msg="Admin username {{ ADMIN_USERNAME }}"
+
+    - name: check root password
+      always_run: yes
+      ignore_errors: yes
+      command: "grep root:: /etc/shadow"
+      register: root_password
+      changed_when: no
+
+    - name: remove root password
+      command: passwd -l root
+      when: root_password | failed
+
+    - name: add admin user
+      user: name={{ ADMIN_USERNAME }} shell=/bin/bash
+    
+    - name: check admin password
+      always_run: yes
+      ignore_errors: yes
+      command: "grep {{ ADMIN_USERNAME }}:: /etc/shadow"
+      register: admin_password
+      changed_when: no
+    
+    - name: remove admin password
+      command: passwd -l admin
+      when: admin_password | failed
+
+    - name: create sudoers.d directory
+      file:
+        path: /etc/sudoers.d
+        owner: root
+        group: root
+        mode: 0755
+        state: directory
+
+    - name: set includedir in sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        line: "#includedir /etc/sudoers.d"
+        state: present
+        validate: "/usr/sbin/visudo -cf %s"
+
+    - name: create sudoer file for admin
+      template:
+        src: sudoers.d.j2
+        dest: "/etc/sudoers.d/{{ ADMIN_USERNAME }}"
+        mode: 0440
+        owner: root
+        group: root
+        validate: "/usr/sbin/visudo -cf %s"
