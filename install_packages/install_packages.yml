@@ -1,0 +1,26 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    ansible_python_interpreter: "/usr/local/bin/python"
+    DEFAULT_PACKAGES:
+      - ufw
+      - fail2ban
+
+  tasks:
+    - debug: msg="Default Packages {{ DEFAULT_PACKAGES }}"
+
+    - name: update APT package cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: upgrade APT to the latest packages
+      apt: upgrade=safe
+
+    - name: install required packages
+      apt: state=installed pkg={{ item }}
+      with_items: DEFAULT_PACKAGES
+
+    - name: install extra packages defined in secrets.yml
+      apt: state=installed pkg={{ item }}
+      with_items: "{{ EXTRA_PACKAGES|default([]) }}"
