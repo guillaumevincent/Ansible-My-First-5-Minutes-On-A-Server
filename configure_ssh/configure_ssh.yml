@@ -3,12 +3,10 @@
   become: yes
 
   vars:
-    ADMIN_USERNAME: admin
     SSH_PORT: 22
     ansible_python_interpreter: "/usr/local/bin/python"
 
   tasks:
-    - debug: msg="Admin username {{ ADMIN_USERNAME }}"
     - debug: msg="Ssh port {{ SSH_PORT }}"
 
     - name: change ssh port
