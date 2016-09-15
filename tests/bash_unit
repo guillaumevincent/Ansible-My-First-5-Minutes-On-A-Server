@@ -24,9 +24,15 @@ YELLOW="${ESCAPE}[93m"
 BLUE="${ESCAPE}[94m"
 
 fail() {
-  local MESSAGE=$1
+  local message=$1
+  local stdout=$2
+  local stderr=$3
+
   format "$RED" "FAILURE"
-  [[ -z "$MESSAGE" ]] || printf -- "$MESSAGE\n"
+  [[ -z $message  ]] || printf -- "$message\n"
+  [[ ! -z $stdout ]] && [ -s $stdout ] && cat $stdout | sed 's:^:out> :' | format $GREEN
+  [[ ! -z $stderr ]] && [ -s $stderr ] && cat $stderr | sed 's:^:err> :' | format $RED
+
   print_stack | grep -v ^$BASH_SOURCE | format "$YELLOW"
   exit 1
 }
@@ -34,38 +40,50 @@ fail() {
 assert() {
   local assertion=$1
   local message=$2
-  local tmp_file=$(mktemp)
-  if ! eval "($assertion)" >/dev/null 2>$tmp_file
-  then
-    message="$message$(cat $tmp_file)"
-    rm $tmp_file
-    fail "$message"
-  else
-    rm $tmp_file
-  fi
+
+  _assert_expression \
+    "$assertion" \
+    "[ \$status == 0 ]" \
+    "\"$message\""
 }
 
 assert_fail() {
   local assertion=$1
   local message=$2
-  local tmp_file=$(mktemp) 
-  if eval "($assertion)" 2>/dev/null >$tmp_file
-  then
-    message="$message$(cat $tmp_file)"
-    rm $tmp_file
-    fail "$message"
-  else 
-    rm $tmp_file
-  fi
+
+  _assert_expression \
+    "$assertion" \
+    "[ \$status != 0 ]" \
+    "\"$message\""
 }
 
 assert_status_code() {
   local expected_status=$1
   local assertion="$2"
   local message="$3"
-  local status
-  eval "($assertion)" >/dev/null 2>&1 && status=$? || status=$?
-  assert_equals $expected_status $status "$message"
+
+  _assert_expression \
+    "$assertion" \
+    "[ \$status == $expected_status ]" \
+    "\"$message\" expected status code $expected_status but was \$status"
+}
+
+_assert_expression() {
+  local assertion=$1
+  local condition=$2
+  local message=$3
+  (
+    local stdout=$(mktemp)
+    local stderr=$(mktemp)
+    trap "rm  -f $stdout $stderr" EXIT
+
+    local status
+    eval "($assertion)" >$stdout 2>$stderr && status=$? || status=$?
+    if ! eval $condition
+    then
+      fail "$(eval echo $message)" $stdout $stderr
+    fi
+  )
 }
 
 assert_equals() {
@@ -184,8 +202,11 @@ failure=0
 for test_file in "$@"
 do
   echo "Running tests in $test_file"
-  (source "$test_file"; run_test_suite)
+  (
+    source "$test_file"
+    cd $(dirname "$test_file")
+    run_test_suite
+  )
   failure=$(( $? || $failure))
 done
 exit $failure
-
