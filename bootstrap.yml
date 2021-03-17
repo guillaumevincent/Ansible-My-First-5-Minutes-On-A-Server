@@ -23,7 +23,7 @@
 
     - name: add authorized keys for admin user
       authorized_key: user={{ ADMIN_USERNAME }} key="{{ lookup('file', item) }}"
-      with_items: PUBLIC_KEYS
+      with_items: "{{ PUBLIC_KEYS }}"
 
     - name: create sudoers.d directory
       file:
